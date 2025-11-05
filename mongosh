@@ -1,0 +1,19 @@
+show dbs
+
+use db_company
+
+db.createCollection("employee")
+
+db.employee.insertOne({ emp_id: 101, emp_name: "John", emp_address: "Pune", emp_age: 28, emp_department: "Sales", emp_email: "john@example.com" })
+
+db.employee.insertMany([ { emp_id: 102, emp_name: "Alice", emp_address: "Mumbai", emp_age: 32, emp_department: "Marketing", emp_email: "alice@example.com" }, { emp_id: 103, emp_name: "Bob", emp_address: "Delhi", emp_age: 24, emp_department: "IT", emp_email: "bob@example.com" }, { emp_id: 104, emp_name: "Clara", emp_address: "Bangalore", emp_age: 29, emp_department: "HR", emp_email: "clara@example.com" }, { emp_id: 105, emp_name: "David", emp_address: "Chennai", emp_age: 35, emp_department: "Finance", emp_email: "david@example.com" }, { emp_id: 106, emp_name: "Eva", emp_address: "Hyderabad", emp_age: 30, emp_department: "Support", emp_email: "eva@example.com" } ])
+
+db.employee.find().pretty()
+
+db.employee.countDocuments()
+
+db.employee.updateOne( { emp_id: 101 }, { $set: { emp_email: "john.newemail@example.com" } } )
+
+db.employee.deleteOne({ emp_id: 105 })
+
+db.employee.find().pretty()
