@@ -1,0 +1,67 @@
+create database Student3;
+
+use Student3;
+
+CREATE TABLE o_rollcall (
+    roll_no INT PRIMARY KEY,
+    name VARCHAR(20),
+    address VARCHAR(20)
+);
+
+
+INSERT INTO o_rollcall VALUES
+(1, 'Hitesh', 'Nandura'),
+(2, 'Piyush', 'MP'),
+(3, 'Ashley', 'Nsk');
+
+CREATE TABLE n_rollcall (
+    roll_no INT PRIMARY KEY,
+    name VARCHAR(20),
+    address VARCHAR(20)
+);
+
+INSERT INTO n_rollcall VALUES
+(3, 'Ashley', 'Nsk'),
+(4, 'Kalpesh', 'Dhule'),
+(5, 'Abhi', 'Satara');
+
+DELIMITER //
+
+CREATE PROCEDURE merge_rollcall(IN p_roll_no INT)
+BEGIN
+    DECLARE v_roll_no INT;
+    DECLARE v_name VARCHAR(20);
+    DECLARE v_address VARCHAR(20);
+    DECLARE done INT DEFAULT FALSE;
+
+    DECLARE cur CURSOR FOR
+        SELECT roll_no, name, address
+        FROM n_rollcall
+        WHERE roll_no > p_roll_no
+        ORDER BY roll_no;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN cur;
+
+    read_loop: LOOP
+        FETCH cur INTO v_roll_no, v_name, v_address;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        IF NOT EXISTS (SELECT 1 FROM o_rollcall WHERE roll_no = v_roll_no) THEN
+            INSERT INTO o_rollcall (roll_no, name, address)
+            VALUES (v_roll_no, v_name, v_address);
+        END IF;
+    END LOOP;
+
+    CLOSE cur;
+END//
+
+DELIMITER ;
+
+CALL merge_rollcall(2);
+SELECT * FROM o_rollcall ORDER BY roll_no;
+
+
