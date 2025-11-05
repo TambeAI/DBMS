@@ -1,0 +1,41 @@
+create database Student2;
+use Student1;
+CREATE TABLE Borrower (Roll_no INT,Name VARCHAR(50),Date_of_Issue DATE,Name_of_Book VARCHAR(50),Status CHAR(1));
+INSERT INTO Borrower (Roll_no, Name, Date_of_Issue, Name_of_Book, Status) VALUES(1, 'Alice', '2025-09-15', 'C Programming', 'I'),(2, 'Bob', '2025-09-01', 'Data Structures', 'I'),(3, 'Charlie', '2025-08-15', 'DBMS', 'I'),(4, 'David', '2025-09-22', 'Python', 'I');
+select * from Borrower;
+CREATE TABLE Fine (Roll_no INT,Date DATE,Amt INT);
+desc fine;
+DELIMITER $$ 
+ CREATE PROCEDURE fine_calculation (IN rno INT, IN bname CHAR(20))
+BEGIN
+DECLARE i_date DATE;
+DECLARE diff INT DEFAULT 0;
+DECLARE fine_amt INT DEFAULT 0;
+DECLARE no_record CONDITION FOR SQLSTATE '02000';
+DECLARE CONTINUE HANDLER FOR no_record
+BEGIN
+SELECT CONCAT('No issued book found for Roll_no: ', rno, ' and Book: ', bname) AS error_message;
+END;
+DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+BEGIN
+SELECT 'An SQL exception occurred. Please check the tables and inputs.' AS error_message;
+END;
+SELECT Date_of_Issue INTO i_date
+FROM Borrower
+WHERE Roll_no = rno AND Name_of_Book = bname AND Status = 'I';
+SET diff = DATEDIFF(CURDATE(), i_date);
+IF diff > 15 AND diff <= 30 THEN
+SET fine_amt = (diff - 15) * 5;
+INSERT INTO Fine VALUES (rno, CURDATE(), fine_amt);
+ELSEIF diff > 30 THEN
+SET fine_amt = (15 * 5) + ((diff - 30) * 50);
+INSERT INTO Fine VALUES (rno, CURDATE(), fine_amt);
+END IF;
+UPDATE Borrower
+SET Status = 'R'
+WHERE Roll_no = rno AND Name_of_Book = bname;
+END $$
+DELIMITER ;
+CALL fine_calculation(3, 'DBMS');
+SELECT * FROM Fine;
+SELECT * FROM Borrower;
