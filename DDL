@@ -1,0 +1,13 @@
+
+create database Payment2;
+use Payment2;
+create table Payment(cust_id int, amount int, mode varchar(20), payment_id int);
+ insert into Payment(cust_id , amount , mode , payment_id ) values(1,200,'online',10),(2,300,'online',11),(3,500,'offline',12);
+select * from Payment;
+UPDATE Payment SET amount = 600 WHERE payment_id = 12;
+Select * from Payment;
+SELECT * FROM Payment WHERE mode = 'online';
+SELECT COUNT(*) AS total_payments FROM Payment;
+DELETE FROM Payment WHERE payment_id = 11;
+select * from Payment
+
