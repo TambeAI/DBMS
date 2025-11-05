@@ -1,0 +1,71 @@
+
+def input_graph():
+    graph = {}
+    n = int(input("Enter number of nodes: "))
+    for _ in range(n):
+        node = input("Enter node label: ")
+        neighbors = input(f"Enter neighbors of {node} separated by space: ").split()
+        graph[node] = neighbors
+    return graph
+
+def bfs(graph, start_node):
+    visited = []
+    queue = []
+    visited.append(start_node)
+    queue.append(start_node)
+
+    print("Breadth-First Search:")
+    while queue:
+        m = queue.pop(0)
+        print(m, end=" ")
+        for neighbor in graph.get(m, []):
+            if neighbor not in visited:
+                visited.append(neighbor)
+                queue.append(neighbor)
+    print()
+
+
+def dfs(graph, node, visited=None):
+    if visited is None:
+        visited = set()
+        print("Depth-First Search:")
+    if node not in visited:
+        print(node, end=" ")
+        visited.add(node)
+        for neighbor in graph.get(node, []):
+            dfs(graph, neighbor, visited)
+
+
+graph = input_graph()
+start = input("Enter starting node: ")
+bfs(graph, start)
+dfs(graph, start)
+
+
+
+
+#OUTPUT
+#Enter number of nodes:6
+#Enter node label: 5
+#Enter neighbors of 5 separated by space: 3 7
+#Enter node label: 3
+#Enter neighbors of 3 separated by space: 2 4
+#Enter node label: 7
+#Enter neighbors of 7 separated by space: 8
+#Enter node label: 2
+#Enter neighbors of 2 separated by space:
+#Enter node label: 4
+#Enter neighbors of 4 separated by space: 8
+#Enter node label: 8
+#Enter neighbors of 8 separated by space:
+#Enter starting node: 5
+
+
+#Breadth-First Search:
+#5 3 7 2 4 8
+
+#Depth-First Search:
+#5 3 2 4 8 7
+
+
+
