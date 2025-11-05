@@ -1,0 +1,29 @@
+import re
+
+
+pairs = [
+    (r'I am (.*)', lambda match: f"Hello {match.group(1)}, how are you feeling today?"),
+    (r'feeling (.*)', lambda match: f"Good to hear you are feeling {match.group(1)}."),
+    (r'I work (.*)', lambda match: f"Wow, working {match.group(1)} sounds great!"),
+    (r'quit', lambda match: "Bye! Take care.")
+]
+
+def chatbot():
+    print("Hi there! I am a chatbot. Type 'quit' to exit.")
+    while True:
+        user_input = input("You: ")
+        matched = False
+        for pattern, response_func in pairs:
+            match = re.match(pattern, user_input, re.IGNORECASE)
+            if match:
+                print("Bot:", response_func(match))
+                matched = True
+                if pattern == r'quit':
+                    return
+                break
+        if not matched:
+            print("Bot: I'm not sure how to respond to that.")
+
+chatbot()
+
+
