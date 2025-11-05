@@ -1,0 +1,34 @@
+create database Company1;
+use Company1;
+CREATE TABLE Employee (emp_id INT PRIMARY KEY,emp_name VARCHAR(50),dept_id INT,salary DECIMAL(10,2),manager_id INT);
+INSERT INTO Employee VALUES (101, 'Alice', 1, 60000, 01),(102, 'Bob', 1, 55000, 02),(103, 'Charlie', 2, 50000, 03),(104, 'David', 3, 45000, 04),(105, 'Eva', 1, 48000, 05);
+select * from Employee;
+CREATE TABLE Department (dept_id INT PRIMARY KEY,dept_name VARCHAR(50),location VARCHAR(50));
+INSERT INTO Department VALUES (1, 'IT', 'New York'),(2, 'HR', 'Chicago'),(3, 'Finance', 'Boston');
+select * from Department;
+CREATE TABLE Project (proj_id INT PRIMARY KEY,proj_name VARCHAR(50),dept_id INT,budget DECIMAL(15,2));
+INSERT INTO Project VALUES (201, 'Website Revamp', 1, 500000),(202, 'Payroll System', 3, 300000),(203, 'Recruitment Drive', 2, 200000);
+select * from Project;
+CREATE TABLE Works_On (emp_id INT,proj_id INT,hours INT,PRIMARY KEY (emp_id, proj_id));
+INSERT INTO Works_On VALUES (101, 201, 120),(102, 201, 100),(103, 203, 90),(105, 201, 80);
+select * from Works_On;
+SELECT e.emp_name, d.dept_name 
+ FROM Employee e 
+ INNER JOIN Department d ON e.dept_id = d.dept_id;
+SELECT e.emp_name, p.proj_name 
+ FROM Employee e 
+ LEFT JOIN Works_On w ON e.emp_id = w.emp_id 
+ LEFT JOIN Project p ON w.proj_id = p.proj_id;
+SELECT p.proj_name, e.emp_name 
+ FROM Project p 
+ RIGHT JOIN Works_On w ON p.proj_id = w.proj_id 
+ RIGHT JOIN Employee e ON w.emp_id = e.emp_id;
+SELECT e.emp_name, p.proj_name 
+ FROM Employee e 
+LEFT JOIN Works_On w ON e.emp_id = w.emp_id 
+ LEFT JOIN Project p ON w.proj_id = p.proj_id 
+ UNION ALL 
+ SELECT e.emp_name, p.proj_name 
+ FROM Project p  
+ LEFT JOIN Works_On w ON p.proj_id = w.proj_id 
+ LEFT JOIN Employee e ON w.emp_id = e.emp_id;
