@@ -1,0 +1,106 @@
+
+import math
+
+
+board = [' ' for _ in range(9)]
+
+def print_board():
+    print("\n")
+    for i in range(3):
+        print(" | ".join(board[i*3:(i+1)*3]))
+        if i < 2:
+            print("---------")
+    print("\n")
+
+def is_winner(brd, player):
+    win_conditions = [
+        [0,1,2], [3,4,5], [6,7,8],  # rows
+        [0,3,6], [1,4,7], [2,5,8],  # columns
+        [0,4,8], [2,4,6]            # diagonals
+    ]
+    return any(all(brd[i] == player for i in combo) for combo in win_conditions)
+
+def is_draw(brd):
+    return ' ' not in brd
+
+def get_valid_moves(brd):
+    return [i for i in range(9) if brd[i] == ' ']
+
+def minimax(brd, depth, alpha, beta, maximizing):
+    if is_winner(brd, 'O'):
+        return 1
+    elif is_winner(brd, 'X'):
+        return -1
+    elif is_draw(brd):
+        return 0
+
+    if maximizing:
+        max_eval = -math.inf
+        for move in get_valid_moves(brd):
+            brd[move] = 'O'
+            eval = minimax(brd, depth + 1, alpha, beta, False)
+            brd[move] = ' '
+            max_eval = max(max_eval, eval)
+            alpha = max(alpha, eval)
+            if beta <= alpha:
+                break  # Beta cut-off
+        return max_eval
+    else:
+        min_eval = math.inf
+        for move in get_valid_moves(brd):
+            brd[move] = 'X'
+            eval = minimax(brd, depth + 1, alpha, beta, True)
+            brd[move] = ' '
+            min_eval = min(min_eval, eval)
+            beta = min(beta, eval)
+            if beta <= alpha:
+                break  # Alpha cut-off
+        return min_eval
+
+def best_move():
+    best_score = -math.inf
+    move = None
+    for i in get_valid_moves(board):
+        board[i] = 'O'
+        score = minimax(board, 0, -math.inf, math.inf, False)
+        board[i] = ' '
+        if score > best_score:
+            best_score = score
+            move = i
+    return move
+
+
+print("Welcome to Tic-Tac-Toe!")
+print("You are X, AI is O.")
+print_board()
+
+while True:
+  
+    user = int(input("Enter your move (0-8): "))
+    if board[user] != ' ':
+        print("Invalid move. Try again.")
+        continue
+    board[user] = 'X'
+    print_board()
+
+    if is_winner(board, 'X'):
+        print("You win!")
+        break
+    if is_draw(board):
+        print("It's a draw!")
+        break
+
+  
+    ai = best_move()
+    board[ai] = 'O'
+    print("AI played at position", ai)
+    print_board()
+
+    if is_winner(board, 'O'):
+        print("AI wins!")
+        break
+    if is_draw(board):
+        print("It's a draw!")
+        break
+    
+    
