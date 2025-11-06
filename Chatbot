@@ -1,0 +1,47 @@
+import time
+
+# Sample help topics
+help_topics = {
+    "password": "To reset your password, visit the internal portal and click 'Forgot Password'.",
+    "email": "If you're not receiving emails, check your spam folder or contact IT support.",
+    "wifi": "For Wi-Fi issues, try restarting your router or contact network support.",
+    "printer": "Ensure the printer is powered on and connected. Check for paper jams.",
+    "software": "For software installation, raise a ticket with the software name and version."
+}
+
+# Simulated ticket database
+tickets = []
+
+def create_ticket(issue):
+    ticket_id = len(tickets) + 1
+    tickets.append({"id": ticket_id, "issue": issue, "status": "Open"})
+    return ticket_id
+
+def chatbot():
+    print("Help Desk Chatbot: Hello! How can I assist you today?")
+    while True:
+        user_input = input("You: ").lower()
+        
+        if "exit" in user_input or "quit" in user_input:
+            print("Chatbot: Thank you! Have a great day.")
+            break
+        
+        matched = False
+        for keyword in help_topics:
+            if keyword in user_input:
+                print(f"Chatbot: {help_topics[keyword]}")
+                matched = True
+                break
+        
+        if not matched:
+            print("Chatbot: I couldn't find a solution. Would you like to create a support ticket? (yes/no)")
+            choice = input("You: ").lower()
+            if choice == "yes":
+                ticket_id = create_ticket(user_input)
+                print(f"Chatbot: Ticket #{ticket_id} created. Our team will get back to you shortly.")
+            else:
+                print("Chatbot: Okay, let me know if you need anything else.")
+
+# Run the chatbot
+if __name__ == "__main__":
+    chatbot()
